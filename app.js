@@ -9,6 +9,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(cors());
+// use the express-static middleware
+app.use(express.static("public"))
 
 app.get('/ping', (req, res, next)  => {
   res.status(200).json('pong!');
