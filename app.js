@@ -62,6 +62,55 @@ app.get('/status', (req, res, next)  => {
   }
 });
 
+let todoList = [ 
+  {id: 1, name: "NGRX Demo app", is_done: true}, 
+  {id: 2, name: "Shopping", is_done: false}, 
+  {id: 3, name: "Call parents", is_done: false}, 
+  {id: 4, name: "Sleep before 12", is_done: false}
+]
+
+app.get('/tasks', (req, res, next) => {
+  if (!(req.headers && req.headers.authorization)) {
+    return res.status(403).json({
+      status: 'access denied'
+    });
+  }
+
+  const header = req.headers.authorization.split(' ');
+  const token = header[1];
+  if (token === '1234567') {
+    res.status(200).json(todoList);
+  } else {
+    res.status(401).json({
+      status: 'error'
+    });
+  }
+
+});
+
+app.post('/create-task', (req, res, next) => {
+  if (!(req.headers && req.headers.authorization)) {
+    return res.status(403).json({
+      status: 'access denied'
+    });
+  }
+  const header = req.headers.authorization.split(' ');
+  const token = header[1];
+  if (token === '1234567') {
+    let newTask = {
+      id: todoList.length + 1,
+      name: req.body.name,
+      is_done: req.body.is_done
+    }
+    todoList.push(newTask);
+    res.status(200).json(newTask);
+  } else {
+    res.status(401).json({
+      status: 'error'
+    });
+  }
+});
+
 app.use((req, res, next) => {
   const err = new Error('Not Found');
   err.status = 404;
